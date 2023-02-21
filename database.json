@@ -1,0 +1,22 @@
+{
+  "dev": {
+    "driver": "pg",
+    "user": "postgres",
+    "password": "postgres",
+    "host": "localhost",
+    "database": "url"
+  },
+  "prod": {
+    "driver": "pg",
+    "database": "url",
+    "host": {
+      "ENV": "DB_HOST"
+    },
+    "user": {
+      "ENV": "DB_USER"
+    },
+    "password": {
+      "ENV": "DB_PW"
+    }
+  }
+}
