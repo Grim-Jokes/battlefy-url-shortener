@@ -6,6 +6,6 @@ CREATE TABLE IF NOT EXISTS "url" (
   Max url limit supported by browsers 
   See: https://stackoverflow.com/a/417184/646373
    */
-  long_url varchar(2000) NOT NULL,
-  short_url varchar(100) NOT NULL
+  long_url varchar(1000) NOT NULL,
+  short_url varchar(20) NOT NULL
 )
