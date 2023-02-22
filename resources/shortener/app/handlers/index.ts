@@ -16,6 +16,6 @@ export function createShortUrl(body: CreateShortUrlBody) {
 
 }
 
-export function redirectToLongUrl() {
-
+export function redirectToLongUrl(shortUrl: string) {
+  return ""
 }

@@ -1,5 +1,11 @@
-import { APIGatewayEvent, Context } from "aws-lambda";
-import * as  handlers from "./app/handlers";
+import { APIGatewayEvent } from "aws-lambda";
+import { Context } from "vm";
+import * as handlers from './app/handlers'
+
+const AWS = require('aws-sdk');
+const S3 = new AWS.S3();
+
+const bucketName = process.env.BUCKET;
 
 /* 
 This code uses callbacks to handle asynchronous function responses.
@@ -11,52 +17,57 @@ https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Using_promises
 https://docs.aws.amazon.com/sdk-for-javascript/v2/developer-guide/calling-services-asynchronously.html
 https://docs.aws.amazon.com/lambda/latest/dg/nodejs-prog-model-handler.html 
 */
-
-export function main(event: APIGatewayEvent, _context: Context) {
+exports.main = async function (event: APIGatewayEvent, context: Context) {
   try {
-    var method = event.httpMethod;
-
-    switch (method) {
-      case "POST":
-        if (event.path === "/") {
-          let body;
-          if (event.body) {
-            const data = JSON.parse(event.body)
-            body = handlers.createShortUrl(data)
-          }
-          return {
-            isBase64Encoded: false,
-            statusCode: 200,
-            headers: {},
-            body: JSON.stringify(body)
-          };
-        }
-        break;
-      case "GET":
-        const shortUrl = event.pathParameters?.shortUrl;
-        console.log("Short URL is: ", shortUrl)
-
-        return {
-          isBase64Encoded: false,
-          statusCode: 200,
-          headers: {},
-          body: JSON.stringify(shortUrl)
-        };
+    const method = event.httpMethod;
+    // Get name, if present
+    let shortUrl;
+    if (event.pathParameters) {
+      ({ id: shortUrl } = event.pathParameters)
     }
 
+    if (method === "GET") {
+      if (shortUrl) {
+        // GET / to get info on widget name
+        const longUrl = handlers.redirectToLongUrl(shortUrl)
+        if (longUrl) {
+          return {
+            statusCode: 302,
+            headers: {
+              'Location': longUrl
+            },
+          };
+        } else {
+          return {
+            statusCode: 404
+          }
+        }
+      }
+    }
+
+    if (method === "POST") {
+      if (event.body) {
+        const url = handlers.createShortUrl(JSON.parse(event.body))
+        return {
+          statusCode: 201,
+          headers: {},
+          body: JSON.stringify(url)
+        };
+      }
+    }
+
+    // We got something besides a GET, POST, or DELETE
     return {
-      isBase64Encoded: false,
       statusCode: 400,
       headers: {},
-      body: JSON.stringify({ error: `method ${method} is not supported` })
+      body: "Invalid request for " + method
     };
   } catch (error) {
-    var body = (error as Error).stack || JSON.stringify(error, null, 2);
+    const body = (error as Error).stack || JSON.stringify(error, null, 2);
     return {
-      isBase64Encoded: false,
       statusCode: 400,
       headers: {},
-      body: JSON.stringify(body)
+      body: body
     }
   }
 }
