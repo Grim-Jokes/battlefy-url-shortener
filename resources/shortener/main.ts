@@ -2,12 +2,8 @@ import { APIGatewayEvent } from "aws-lambda";
 import { Context } from "vm";
 import * as handlers from './app/handlers'
 import { getClient } from "./infra/db";
+import { createGetLongUrl } from "./infra/getLongUrl";
 import { createSaveUrl } from "./infra/saveUrl";
-
-const AWS = require('aws-sdk');
-const S3 = new AWS.S3();
-
-const bucketName = process.env.BUCKET;
 
 /* 
 This code uses callbacks to handle asynchronous function responses.
@@ -30,8 +26,10 @@ exports.main = async function (event: APIGatewayEvent, context: Context) {
 
     if (method === "GET") {
       if (shortUrl) {
+        const client = await getClient()
+        const getLongUrl = await createGetLongUrl(client)
         // GET / to get info on widget name
-        const longUrl = await handlers.redirectToLongUrl(shortUrl)
+        const longUrl = await handlers.redirectToLongUrl(shortUrl, getLongUrl)
         if (longUrl) {
           return {
             statusCode: 302,

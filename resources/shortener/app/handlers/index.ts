@@ -9,7 +9,7 @@ export async function createShortUrl(
   body: CreateShortUrlBody,
   saveUrl: (url: Url) => Promise<void>
 ) {
-  
+
   if (body.url) {
     const url = new Url({ longUrl: body.url })
     await saveUrl(url)
@@ -21,6 +21,6 @@ export async function createShortUrl(
 
 }
 
-export function redirectToLongUrl(shortUrl: string) {
-  return ""
+export async function redirectToLongUrl(shortUrl: string, getLongUrl: (shortUrl: string) => Promise<Url | null>) {
+  return getLongUrl(shortUrl)
 }
