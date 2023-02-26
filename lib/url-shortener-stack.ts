@@ -48,7 +48,10 @@ export class UrlShortenerService extends Construct {
 
   private setupDb() {
     return new dynamodb.Table(this, "url", {
-      partitionKey: { name: "shortUrl", type: dynamodb.AttributeType.STRING }
+      partitionKey: { 
+        name: "shortUrl", 
+        type: dynamodb.AttributeType.STRING,
+      }
     });
   }
 }
