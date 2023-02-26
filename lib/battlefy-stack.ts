@@ -8,6 +8,5 @@ export class BattlefyStack extends cdk.Stack {
     super(scope, id, props);
 
      new url_shortener_service.UrlShortenerService(this, "UrlShortener");
-     
   }
 }
