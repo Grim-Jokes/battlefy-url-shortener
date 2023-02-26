@@ -18,15 +18,18 @@ jobs:
         with:
           node-version: "16"
 
-      - name: "Build"
-        run: "npm run build"
-
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
           role-to-assume: arn:aws:iam::078401248844:role/GithubActions
           role-session-name: "GithubDeploy"
           aws-region: us-east-1
+
+      - name: "Install"
+        run: "npm install"
+
+      - name: "Build"
+        run: "npm run build"
 
       - name: cdk diff
         uses: youyo/aws-cdk-github-actions@v2
@@ -54,4 +57,3 @@ jobs:
           actions_comment: false
         env:
           AWS_DEFAULT_REGION: "us-east-1"
-
