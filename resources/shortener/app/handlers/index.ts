@@ -5,10 +5,15 @@ interface CreateShortUrlBody {
   url?: string
 }
 
-export function createShortUrl(body: CreateShortUrlBody) {
-
+export async function createShortUrl(
+  body: CreateShortUrlBody,
+  saveUrl: (url: Url) => Promise<void>
+) {
+  
   if (body.url) {
     const url = new Url({ longUrl: body.url })
+    await saveUrl(url)
+
     return serializeUrl(url)
   }
 

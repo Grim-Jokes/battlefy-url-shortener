@@ -1,6 +1,8 @@
 import { APIGatewayEvent } from "aws-lambda";
 import { Context } from "vm";
 import * as handlers from './app/handlers'
+import { getClient } from "./infra/db";
+import { createSaveUrl } from "./infra/saveUrl";
 
 const AWS = require('aws-sdk');
 const S3 = new AWS.S3();
@@ -29,7 +31,7 @@ exports.main = async function (event: APIGatewayEvent, context: Context) {
     if (method === "GET") {
       if (shortUrl) {
         // GET / to get info on widget name
-        const longUrl = handlers.redirectToLongUrl(shortUrl)
+        const longUrl = await handlers.redirectToLongUrl(shortUrl)
         if (longUrl) {
           return {
             statusCode: 302,
@@ -47,7 +49,12 @@ exports.main = async function (event: APIGatewayEvent, context: Context) {
 
     if (method === "POST") {
       if (event.body) {
-        const url = handlers.createShortUrl(JSON.parse(event.body))
+        const client = await getClient()
+        const saveUrl = createSaveUrl(client)
+        const url = handlers.createShortUrl(
+          JSON.parse(event.body),
+          saveUrl,
+        )
         return {
           statusCode: 201,
           headers: {},
