@@ -9,8 +9,8 @@ export class UrlShortenerService extends Construct {
   constructor(scope: Construct, id: string) {
     super(scope, id);
 
-    const handler = this.setupLambdaHandler()
     const table = this.setupDb()
+    const handler = this.setupLambdaHandler(table)
     table.grantReadWriteData(handler)
 
     const api = new apigateway.RestApi(this, "url-shortener-api", {
@@ -32,12 +32,13 @@ export class UrlShortenerService extends Construct {
     shortUrl.addMethod("GET", urlIntegration);    // GET /{id}
   }
 
-  private setupLambdaHandler() {
+  private setupLambdaHandler(table: dynamodb.Table) {
     const handler = new lambda.Function(this, "UrlShortener", {
       runtime: lambda.Runtime.NODEJS_16_X,
       code: lambda.Code.fromAsset("resources/shortener"),
       handler: "main.main",
       environment: {
+        TABLE_NAME: table.tableName,
         DYNAMO_ENDPOIMT: "https://dynamodb.us-east-1.amazonaws.com"
       },
     });

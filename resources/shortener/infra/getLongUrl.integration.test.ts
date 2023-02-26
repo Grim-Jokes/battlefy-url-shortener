@@ -18,7 +18,7 @@ describe("getLongUrl", () => {
 
     await new Promise((res) => {
       dynamoClient.putItem({
-        TableName: "url",
+        TableName: process.env.DYNAMO_TABLE_NAME || "url",
         Item: {
           "shortUrl": {
             "S": "short"

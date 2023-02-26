@@ -7,7 +7,7 @@ beforeAll(async () => {
   globalThis.dynamoClient = client;
 
   const params = {
-    TableName: "url",
+    TableName: process.env.DYNAMO_TABLE_NAME || "url",
     KeySchema: [
       {
         AttributeName: "shortUrl",
@@ -40,7 +40,7 @@ beforeAll(async () => {
 
 afterAll(async () => {
   await new Promise((res, rej) => {
-    client.deleteTable({ TableName: "url" }, function (err, data) {
+    client.deleteTable({ TableName: process.env.DYNAMO_TABLE_NAME || "url" }, function (err, data) {
       if (err) {
         rej(err)
       } else {

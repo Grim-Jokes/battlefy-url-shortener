@@ -7,7 +7,7 @@ export function createSaveUrl(db: DynamoDB) {
   return async (url: Url): Promise<void> => {
     // Not catching error as we need the caller to handle it
     await db.putItem({
-      TableName: "url",
+      TableName: process.env.DYNAMO_TABLE_NAME || "url",
       Item: {
         "shortUrl": {
           "S": url.shortUrl

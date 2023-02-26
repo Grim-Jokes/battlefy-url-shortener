@@ -11,7 +11,7 @@ export async function createGetLongUrl(db: DynamoDB) {
       fail = rej;
     });
     await db.getItem({
-      TableName: "url",
+      TableName: process.env.DYNAMO_TABLE_NAME || "url",
       Key: {
         'shortUrl': { S: shortUrl }
       },
