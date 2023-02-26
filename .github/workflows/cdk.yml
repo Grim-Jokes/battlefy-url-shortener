@@ -1,0 +1,54 @@
+name: "deploy"
+run-name: "deploy to main"
+on:
+  push:
+    branches: [main]
+permissions:
+  id-token: write
+  contents: read
+
+jobs:
+  aws_cdk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Download files from repo"
+        uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v2
+        with:
+          node-version: "16"
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          role-to-assume: arn:aws:iam::078401248844:role/GithubActions
+          role-session-name: "GithubDeploy"
+          aws-region: us-east-1
+
+      - name: cdk diff
+        uses: youyo/aws-cdk-github-actions@v2
+        with:
+          cdk_version: "2.66.1"
+          cdk_subcommand: "diff"
+          actions_comment: true
+        env:
+          AWS_DEFAULT_REGION: "us-east-1"
+
+      - name: cdk synth
+        uses: youyo/aws-cdk-github-actions@v2
+        with:
+          cdk_subcommand: "synth"
+          cdk_version: "2.66.1"
+        env:
+          AWS_DEFAULT_REGION: "us-east-1"
+
+      - name: cdk deploy
+        uses: youyo/aws-cdk-github-actions@v2
+        with:
+          cdk_version: "2.66.1"
+          cdk_subcommand: "deploy"
+          cdk_args: "--require-approval never"
+          actions_comment: false
+        env:
+          AWS_DEFAULT_REGION: "us-east-1"
+
