@@ -1,6 +1,6 @@
 import { Url } from "../model"
 
-import { DynamoDB } from "@aws-sdk/client-dynamodb"
+import { DynamoDB } from "aws-sdk"
 
 
 export function createSaveUrl(db: DynamoDB) {

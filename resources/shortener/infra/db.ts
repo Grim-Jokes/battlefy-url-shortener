@@ -1,4 +1,6 @@
-import { DynamoDB } from "@aws-sdk/client-dynamodb";
+import { DynamoDB, config } from "aws-sdk";
+
+config.update({ region: 'us-east-1' });
 
 let docClient: DynamoDB;
 
@@ -8,7 +10,7 @@ export async function getClient(): Promise<DynamoDB> {
   }
 
   docClient = new DynamoDB({
-    endpoint: "http://localhost:8000",
+    endpoint: process.env.DYNAMO_ENDPOINT || "http://localhost:8000",
   })
 
   return docClient;

@@ -1,4 +1,4 @@
- import { DynamoDB } from "@aws-sdk/client-dynamodb";
+ import { DynamoDB } from "aws-sdk";
 
 declare global {
   var dynamoClient: DynamoDB;

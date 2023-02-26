@@ -1,11 +1,5 @@
 const { getClient } = require("../../resources/shortener/infra/db")
 
-const DB_CONFIG = {
-  driver: "pg",
-  user: "postgres",
-  password: "postgres"
-
-}
 
 let client;
 beforeAll(async () => {
@@ -31,10 +25,27 @@ beforeAll(async () => {
       WriteCapacityUnits: 1
     },
   }
-  await client.createTable(params);
+
+  await new Promise((res, rej) => {
+    client.createTable(params, function (err, data) {
+      if (err) {
+        rej(err)
+      } else {
+        res(data)
+      }
+    });
+  });
 })
 
 
 afterAll(async () => {
-  await client.deleteTable({ TableName: "url" })
+  await new Promise((res, rej) => {
+    client.deleteTable({ TableName: "url" }, function (err, data) {
+      if (err) {
+        rej(err)
+      } else {
+        res(data)
+      }
+    });
+  });
 })

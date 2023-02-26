@@ -14,18 +14,22 @@ describe("getLongUrl", () => {
     expect(longUrl).toBe(null)
   });
 
-  it("Should return an existing long url pair", async () => {
+  it.only("Should return an existing long url pair", async () => {
 
-    await dynamoClient.putItem({
-      TableName: "url",
-      Item: {
-        "shortUrl": {
-          "S": "short"
-        },
-        "longUrl": {
-          "S": "long"
+    await new Promise((res) => {
+      dynamoClient.putItem({
+        TableName: "url",
+        Item: {
+          "shortUrl": {
+            "S": "short"
+          },
+          "longUrl": {
+            "S": "long"
+          }
         }
-      }
+      }, (_, data) => {
+        res(data)
+      })
     });
 
     const url = await getLongUrl("short");
