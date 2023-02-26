@@ -51,7 +51,7 @@ exports.main = async function (event: APIGatewayEvent, context: Context) {
       if (event.body) {
         const client = await getClient()
         const saveUrl = createSaveUrl(client)
-        const url = handlers.createShortUrl(
+        const url = await handlers.createShortUrl(
           JSON.parse(event.body),
           saveUrl,
         )
