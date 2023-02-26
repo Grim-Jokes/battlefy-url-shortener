@@ -2,9 +2,9 @@ import { createSaveUrl } from "./saveUrl";
 import { Url } from "../model";
 
 describe("saveUrl", () => {
-  let saveUrl: (url: Url) => Promise<number>;
+  let saveUrl: (url: Url) => Promise<void>;
   beforeEach(async () => {
-    saveUrl = await createSaveUrl(globalThis.db)
+    saveUrl = await createSaveUrl(globalThis.dynamoClient)
   })
 
   it("Should save the url in the database", async () => {
@@ -12,7 +12,5 @@ describe("saveUrl", () => {
       shortUrl: "short",
       longUrl: "long"
     }))
-
-    expect(id).toBe(1)
   });
 })

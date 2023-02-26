@@ -1,5 +1,13 @@
 version: "3.9"
 services:
+  dynamo:
+    image: amazon/dynamodb-local
+    hostname: dynamodb
+    restart: always
+    ports:
+      - 8000:8000
+      - 8001:8001
+    command: "-jar DynamoDBLocal.jar -sharedDb"
   db:
     image: "postgres:latest"
     environment:

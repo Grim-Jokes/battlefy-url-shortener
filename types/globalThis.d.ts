@@ -1,5 +1,5 @@
-import { DynamoDB } from "aws-sdk"
+ import { DynamoDB } from "@aws-sdk/client-dynamodb";
 
 declare global {
-  const dynamoClient: DynamoDB;
+  var dynamoClient: DynamoDB;
 }

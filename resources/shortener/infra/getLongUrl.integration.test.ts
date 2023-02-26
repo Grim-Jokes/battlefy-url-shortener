@@ -4,7 +4,7 @@ import { Url } from "../model";
 describe("getLongUrl", () => {
   let getLongUrl: (shortUrl: string) => Promise<Url | null>;
   beforeEach(async () => {
-    getLongUrl = await createGetLongUrl(globalThis.db)
+    getLongUrl = await createGetLongUrl(globalThis.dynamoClient)
   })
 
   it("Should save the url in the database", async () => {
@@ -15,14 +15,21 @@ describe("getLongUrl", () => {
   });
 
   it("Should return an existing long url pair", async () => {
-    const result = await globalThis.db.query(
-      `INSERT INTO "url" (long_url, short_url) VALUES ($1, $2)
-      RETURNING id`, ["long", "short"]
-    );
+
+    await dynamoClient.putItem({
+      TableName: "url",
+      Item: {
+        "shortUrl": {
+          "S": "short"
+        },
+        "longUrl": {
+          "S": "long"
+        }
+      }
+    });
 
     const url = await getLongUrl("short");
     expect(url).toEqual({
-      id: result.rows[0].id,
       longUrl: "long",
       _shortUrl: "short"
     })

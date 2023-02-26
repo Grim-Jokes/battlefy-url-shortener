@@ -1,5 +1,7 @@
 import { Pool, PoolClient } from "pg"
 
+import { DynamoDB } from "@aws-sdk/client-dynamodb";
+
 let pool: Pool;
 
 export function getDb(): Promise<PoolClient> {
@@ -13,6 +15,21 @@ export function getDb(): Promise<PoolClient> {
   }
 
   return pool.connect()
+}
+
+let docClient: DynamoDB;
+
+export async function getClient(): Promise<DynamoDB> {
+  if (docClient) {
+    return docClient;
+  }
+
+  docClient = new DynamoDB({
+    endpoint: "http://localhost:8000",
+  })
+
+  return docClient;
+
 }
 
 export async function close() {

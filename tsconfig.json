@@ -20,8 +20,9 @@
     "experimentalDecorators": true,
     "strictPropertyInitialization": false,
     "typeRoots": [
-      "./node_modules/@types"
-    ]
+      "./node_modules/@types",
+      "./types"
+    ],
   },
   "exclude": [
     "node_modules",
