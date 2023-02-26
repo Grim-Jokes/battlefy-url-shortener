@@ -4,13 +4,8 @@ import { Url } from "../model"
 export async function createGetLongUrl(db: DynamoDB) {
 
   return async (shortUrl: string): Promise<Url | null> => {
-    let success: (url: Url) => void;
-    let fail: (err: Error) => void
-    const p = new Promise<Url>((res, rej) => {
-      success = res;
-      fail = rej;
-    });
-    await db.getItem({
+
+    return new Promise((success, fail) => db.getItem({
       TableName: process.env.DYNAMO_TABLE_NAME || "url",
       Key: {
         'shortUrl': { S: shortUrl }
@@ -18,18 +13,17 @@ export async function createGetLongUrl(db: DynamoDB) {
       ProjectionExpression: "longUrl"
     }, (err, data) => {
       if (err) {
-        fail(err)
+        return fail(err)
       }
-      // done(data)
-      success(new Url({ shortUrl, longUrl: data.Item?.longUrl.S as string }))
 
-    });
+      if (!data.Item) {
+        return success(null)
+      }
 
-    return p;
-
-    // return new Url({
-    //   shortUrl,
-    //   longUrl: result.Item.longUrl.S as string
-    // })
+      success(new Url({ 
+        shortUrl, 
+        longUrl: data.Item?.longUrl.S as string 
+      }))
+    }));
   }
 }

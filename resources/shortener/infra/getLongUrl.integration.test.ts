@@ -14,7 +14,7 @@ describe("getLongUrl", () => {
     expect(longUrl).toBe(null)
   });
 
-  it.only("Should return an existing long url pair", async () => {
+  it("Should return an existing long url pair", async () => {
 
     await new Promise((res) => {
       dynamoClient.putItem({
