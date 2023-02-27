@@ -34,6 +34,14 @@ jobs:
       - name: "Test"
         run: "npm run test:unit"
 
+      - name: "Setup Test DDB"
+        uses: rrainn/dynamodb-action@v2.0.1
+        with:
+          port: 8000
+
+      - name: "Integration Test"
+        run: "npm run test:integration"
+
       - name: cdk diff
         uses: youyo/aws-cdk-github-actions@v2
         with:
