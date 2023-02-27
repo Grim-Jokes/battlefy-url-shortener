@@ -6,12 +6,14 @@ The `cdk.json` file tells the CDK Toolkit how to execute your app.
 
 ## Useful commands
 
-* `npm run build`   compile typescript to js
-* `npm run watch`   watch for changes and compile
-* `npm run test`    perform the jest unit tests
-* `cdk deploy`      deploy this stack to your default AWS account/region
-* `cdk diff`        compare deployed stack with current state
-* `cdk synth`       emits the synthesized CloudFormation template
+* `npm run build`               compile typescript to js
+* `npm run watch`               watch for changes and compile
+* `npm run test:integration`    perform the jest integration tests
+* `npm run test:unit`           perform the jest unit tests
+* `cdk deploy`                  deploy this stack to your default AWS account/region
+* `cdk diff`                    compare deployed stack with current state
+* `cdk synth`                   emits the synthesized CloudFormation template
+
 
 ## Contributing
 
@@ -35,19 +37,22 @@ with things I've not had a chance to use.
 The layered architecture was for maintainability and extensibility and in hindsight, the 3 folders could probably just be 3 ts files.
 
 #### First Pass
-- Wanted to use postgres - The DB tech stack I am most familiar with however it didn't seem like it was worth the overhead, and extensive optimizations, that were needed to get the same speed as Redis + DynamoDb.
+- Wanted to use Postgres 
+  - The DB tech I am most familiar with. However, it didn't seem like it was worth the overhead, and extensive optimizations, that were needed to get the same speed as Redis + DynamoDb.
 
 #### Second Pass
-- Due to the architectural decisions, I was able to swap out posters with dynamodb in minutes and I am really glad I did. 
+- Due to the architectural decisions, I was able to swap out Postgres with Dynamodb in minutes and I am really glad I did. 
 If I had time I would have put a Redis cache, if not DAX, in front of DynamoDB to support bursts of requests. Due to fear of surprise costs, I opted to not go down that path. 
 
 ### Objective 3
 -  **guarantee handling of traffic bursts with over 9000 parallel requests?**
-    - Set up a redis key-value store
-      - Data is stored in memory at the cost of reliability
+    - Set up a Redis key-value store
+      - Data is stored in memory at the cost of reliability whereas Data stores like DDB tend to use the hard drive which incurs a performance penalty to read and write. 
+      - The Redis cache could be a cluster and replication enabled to support scaling horizontally if vertically is not possible anymore.
 - **minimize monthly cloud provider costs as much as possible?**
   - Determine the pricing of each resource in use 
   - Ensure resources being used are the right size/scale. 
+  - Have local resources such as docker containers - This reduces the number of resources deployed in our environments and gives developers full control to make changes without needing to worry about costs.
 - **protect the POST action so that only our administrators can submit URLs?**
   - We have to ensure we validate authentication headers in the lambda
   - Enable `AWS_IAM` authentication on lambda URL and grant the correct policy on the respective role
