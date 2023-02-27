@@ -3,6 +3,7 @@ import * as path from 'path'
 import * as lambda from "aws-cdk-lib/aws-lambda";
 import * as apigateway from "aws-cdk-lib/aws-apigateway";
 import * as dynamodb from "aws-cdk-lib/aws-dynamodb";
+import { RemovalPolicy } from "aws-cdk-lib";
 
 
 export class UrlShortenerService extends Construct {
@@ -34,7 +35,8 @@ export class UrlShortenerService extends Construct {
       partitionKey: {
         name: "shortUrl",
         type: dynamodb.AttributeType.STRING,
-      }
+      },
+      removalPolicy: RemovalPolicy.DESTROY
     });
   }
 
