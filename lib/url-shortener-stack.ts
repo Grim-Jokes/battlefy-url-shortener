@@ -11,7 +11,6 @@ export class UrlShortenerService extends Construct {
 
     const table = this.setupDb()
     const handler = this.setupLambdaHandler(table)
-    table.grantReadWriteData(handler)
     this.setupApiGateway(handler)
   }
 
@@ -21,10 +20,11 @@ export class UrlShortenerService extends Construct {
       code: lambda.Code.fromAsset("resources/shortener"),
       handler: "main.main",
       environment: {
-        TABLE_NAME: table.tableName,
+        DYNAMO_TABLE_NAME: table.tableName,
         DYNAMO_ENDPOINT: "https://dynamodb.us-east-1.amazonaws.com"
       },
     });
+    table.grantReadWriteData(handler)
 
     return handler;
   }
