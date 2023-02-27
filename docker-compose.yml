@@ -5,8 +5,8 @@ services:
     hostname: dynamodb
     restart: always
     ports:
-      - 8000
-      - 8001
+      - 8000:8000
+      - 8001:8001
     command: "-jar DynamoDBLocal.jar -sharedDb"
   # redis:
   #   image: "redis:latest"
