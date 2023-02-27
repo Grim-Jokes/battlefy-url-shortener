@@ -16,7 +16,7 @@ export function createSaveUrl(db: DynamoDB) {
             "S": url.longUrl
           }
         }
-      }, (err, data) => {
+      }, (err) => {
         if (err) {
           return rej(err)
         }
