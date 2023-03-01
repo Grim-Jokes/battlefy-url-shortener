@@ -46,14 +46,16 @@ export class UrlShortenerService extends Construct {
     });
 
     const apiIntegration = new apigateway.LambdaIntegration(handler, {
-      proxy: false,
       requestTemplates: { "application/json": '{ "statusCode": "200" }' }
     });
 
 
     api.root.addMethod("POST", apiIntegration);
 
-    const urlIntegration = new apigateway.LambdaIntegration(handler);
+    const urlIntegration = new apigateway.LambdaIntegration(handler, {
+      requestTemplates: { "application/json": '{ "statusCode": "200" }' }
+    }
+    );
 
     const shortUrl = api.root.addResource("{id}");
 

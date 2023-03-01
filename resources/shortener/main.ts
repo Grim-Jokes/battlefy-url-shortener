@@ -29,12 +29,12 @@ exports.main = async function (event: APIGatewayEvent, context: Context) {
         const client = await getClient()
         const getLongUrl = await createGetLongUrl(client)
         // GET / to get info on widget name
-        const longUrl = await handlers.redirectToLongUrl(shortUrl, getLongUrl)
-        if (longUrl) {
+        const url = await handlers.redirectToLongUrl(shortUrl, getLongUrl)
+        if (url) {
           return {
             statusCode: 302,
             headers: {
-              'Location': longUrl
+              'Location': url.longUrl
             },
           };
         } else {
